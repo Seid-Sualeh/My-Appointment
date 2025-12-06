@@ -54,49 +54,55 @@ const googleStrategy = new GoogleStrategy(
   }
 );
 
-const facebookStrategy = new FacebookStrategy(
-  {
-    clientID: process.env.FACEBOOK_APP_ID,
-    clientSecret: process.env.FACEBOOK_APP_SECRET,
-    callbackURL:
-      process.env.FACEBOOK_CALLBACK_URL ||
-      "http://localhost:5000/api/auth/facebook/callback",
-    profileFields: ["id", "displayName", "emails"],
-  },
-  async (accessToken, refreshToken, profile, done) => {
-    try {
-      const email =
-        profile.emails && profile.emails[0]
-          ? profile.emails[0].value
-          : `${profile.id}@facebook.com`;
-      let user = await User.findOne({ email });
+// Only initialize Facebook strategy if credentials are provided
+let facebookStrategy;
+if (process.env.FACEBOOK_APP_ID && process.env.FACEBOOK_APP_SECRET) {
+  facebookStrategy = new FacebookStrategy(
+    {
+      clientID: process.env.FACEBOOK_APP_ID,
+      clientSecret: process.env.FACEBOOK_APP_SECRET,
+      callbackURL:
+        process.env.FACEBOOK_CALLBACK_URL ||
+        "http://localhost:5000/api/auth/facebook/callback",
+      profileFields: ["id", "displayName", "emails"],
+    },
+    async (accessToken, refreshToken, profile, done) => {
+      try {
+        const email =
+          profile.emails && profile.emails[0]
+            ? profile.emails[0].value
+            : `${profile.id}@facebook.com`;
+        let user = await User.findOne({ email });
 
-      if (!user) {
-        user = await User.create({
-          name: profile.displayName,
-          email,
-          socialLogin: {
-            facebookId: profile.id,
-          },
-          emailVerified: true,
-        });
-      } else if (!user.socialLogin || !user.socialLogin.facebookId) {
-        if (!user.socialLogin) {
-          user.socialLogin = {};
+        if (!user) {
+          user = await User.create({
+            name: profile.displayName,
+            email,
+            socialLogin: {
+              facebookId: profile.id,
+            },
+            emailVerified: true,
+          });
+        } else if (!user.socialLogin || !user.socialLogin.facebookId) {
+          if (!user.socialLogin) {
+            user.socialLogin = {};
+          }
+          user.socialLogin.facebookId = profile.id;
+          await user.save();
         }
-        user.socialLogin.facebookId = profile.id;
-        await user.save();
-      }
 
-      return done(null, user);
-    } catch (error) {
-      return done(error, null);
+        return done(null, user);
+      } catch (error) {
+        return done(error, null);
+      }
     }
-  }
-);
+  );
+}
 
 passport.use(googleStrategy);
-passport.use(facebookStrategy);
+if (facebookStrategy) {
+  passport.use(facebookStrategy);
+}
 
 passport.serializeUser((user, done) => {
   done(null, user.id);

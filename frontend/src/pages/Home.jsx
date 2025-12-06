@@ -1,73 +1,8 @@
-// import React from "react";
-// import { Link } from "react-router-dom";
-// import { useSelector } from "react-redux";
-// import "./Home.css";
 
-// const Home = () => {
-//   const { isAuthenticated, user } = useSelector((state) => state.auth);
-
-//   return (
-//     <div className="home">
-//       <section className="hero">
-//         <div className="hero-content">
-//           <h1>Welcome to AppointmentHub</h1>
-//           <p>Streamline your appointment booking and management process</p>
-
-//           {!isAuthenticated ? (
-//             <div className="hero-actions">
-//               <Link to="/register" className="btn-primary">
-//                 Get Started
-//               </Link>
-//               <Link to="/login" className="btn-secondary">
-//                 Sign In
-//               </Link>
-//             </div>
-//           ) : (
-//             <div className="hero-actions">
-//               <Link to="/dashboard" className="btn-primary">
-//                 Go to Dashboard
-//               </Link>
-//             </div>
-//           )}
-//         </div>
-//       </section>
-
-//       <section className="features">
-//         <div className="container">
-//           <h2>Why Choose AppointmentHub?</h2>
-//           <div className="features-grid">
-//             <div className="feature-card">
-//               <h3>Easy Booking</h3>
-//               <p>Book appointments with just a few clicks</p>
-//             </div>
-//             <div className="feature-card">
-//               <h3>Business Management</h3>
-//               <p>Manage your business appointments efficiently</p>
-//             </div>
-//             <div className="feature-card">
-//               <h3>Real-time Updates</h3>
-//               <p>Get instant notifications about your appointments</p>
-//             </div>
-//           </div>
-//         </div>
-//       </section>
-//     </div>
-//   );
-// };
-
-// export default Home;
 
 import React from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-// import {
-//   CalendarDaysIcon,
-//   ClockIcon,
-//   BellAlertIcon,
-//   ChartBarIcon,
-//   DevicePhoneMobileIcon,
-//   ShieldCheckIcon,
-// } from "@heroicons/react";
 
 
 import {
