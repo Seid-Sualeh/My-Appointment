@@ -1,9 +1,7 @@
 let GeminiAI;
 try {
   GeminiAI = require("@google/generative-ai");
-} catch (error) {
-  console.warn("Gemini AI module not found. AI features will be disabled.");
-}
+} catch (error) {}
 
 const dotenv = require("dotenv");
 
@@ -13,21 +11,18 @@ class AIService {
   constructor() {
     // Check if Gemini AI is available
     if (!GeminiAI) {
-      console.warn("Gemini AI module not available. AI features disabled.");
       this.available = false;
       return;
     }
 
     // Check if API key is configured
     if (!process.env.GEMINI_API_KEY) {
-      console.warn("Gemini API key not configured. AI features disabled.");
       this.available = false;
       return;
     }
 
     this.gemini = new GeminiAI.GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    this.model = process.env.GEMINI_MODEL || "gemini-1.0-pro";
-    console.log("Using Gemini model:", this.model);
+    this.model = process.env.GEMINI_MODEL || "gemini-pro";
     this.systemPrompt = this.getSystemPrompt();
     this.available = true;
   }
@@ -128,27 +123,69 @@ System Context: ${this.systemPrompt}`;
 
       return text;
     } catch (error) {
-      console.error("AI Service Error:", error);
+      // Enhanced fallback responses for when Gemini API fails
+      const lowerMessage = userMessage.toLowerCase();
 
-      // Handle specific Gemini errors with better user messages
-      if (error.message.includes("429") || error.message.includes("quota")) {
-        throw new Error(
-          "AI service is temporarily unavailable due to high demand. Please try again later or use the quick actions below."
-        );
-      } else if (
-        error.message.includes("invalid_api_key") ||
-        error.message.includes("API key")
-      ) {
-        throw new Error(
-          "AI service configuration error. Please contact support."
-        );
-      } else if (error.message.includes("network")) {
-        throw new Error(
-          "Network error connecting to AI service. Please check your internet connection."
-        );
-      } else {
-        throw new Error("Failed to generate AI response. Please try again.");
+      // Comprehensive fallback responses
+      const fallbackResponses = {
+        // Authentication and registration
+        "how do i register":
+          "To register, click on the 'Register' button on the homepage, fill in your details including email and password, then verify your email address by clicking the link sent to your inbox. After verification, you can log in to access all features.",
+        "how do i login":
+          "To login, click on the 'Sign In' button, enter your registered email and password, then click 'Login'. If you forgot your password, use the 'Forgot Password' link to reset it.",
+        "what is the difference between business and customer accounts":
+          "Business accounts can create time slots, manage appointments, and access business analytics. Customer accounts can search for businesses, book appointments, and manage their own appointments. Choose the account type that matches your needs during registration.",
+
+        // Appointment booking
+        "how do i book an appointment":
+          "To book an appointment: 1) Login to your account, 2) Go to the 'Appointments' page, 3) Search for businesses or select from available options, 4) Choose an available time slot from the calendar, 5) Confirm your booking details and submit. You'll receive a confirmation email with the appointment details.",
+        "what's the process for booking my first appointment":
+          "To book your first appointment: 1) Register and verify your email, 2) Login, 3) Go to Appointments page, 4) Search for businesses, 5) Choose a time slot, 6) Confirm booking. You'll get an email confirmation.",
+        "how do i book my first appointment":
+          "To book your first appointment: 1) Register as a customer, 2) Verify your email via the link sent to your inbox, 3) Login with your credentials, 4) Navigate to the 'Appointments' section, 5) Browse available businesses and their services, 6) Choose a convenient time slot, 7) Complete the booking form and submit. Check your email for the confirmation and appointment details.",
+        "how do i find businesses":
+          "You can find businesses by going to the 'Appointments' page and using the search function. You can search by business name, service type, or browse through the available options. Each business listing shows their available services and time slots.",
+        "how do i see my appointments":
+          "To view your appointments, go to the 'Appointments' page after logging in. You'll see a list of all your upcoming and past appointments. You can filter by date, status, or business name. Click on any appointment to see details or manage it.",
+
+        // Appointment management
+        "how do i cancel an appointment":
+          "To cancel an appointment: 1) Go to the 'Appointments' page, 2) Find the appointment you want to cancel, 3) Click on it to see details, 4) Click the 'Cancel' button. Note that you can only cancel appointments at least 2 hours before the scheduled time.",
+        "how do i reschedule an appointment":
+          "To reschedule: 1) Go to the 'Appointments' page, 2) Click on the appointment you want to change, 3) Click 'Reschedule', 4) Choose a new available time slot, 5) Confirm the changes. The business will be notified automatically.",
+
+        // Business features
+        "how do i create time slots":
+          "As a business user: 1) Go to the 'Business Admin' page, 2) Click on 'Time Slot Management', 3) Select the dates and times you're available, 4) Set the duration for each appointment slot, 5) Save your time slots. Customers will be able to book during these available times.",
+        "how do i manage appointments":
+          "Business users can manage appointments through the 'Business Admin' dashboard. You can view all upcoming appointments, change their status (pending/confirmed/cancelled), add notes, and communicate with customers through the system.",
+        "how do i update my business profile":
+          "To update your business profile: 1) Go to the 'Profile' page, 2) Click 'Edit Business Information', 3) Update your business name, description, contact details, and services offered, 4) Save your changes. This information will be visible to customers when they search for your business.",
+
+        // General help
+        help: "I can help with registration, login, booking appointments, managing your schedule, and answering questions about the appointment system. Try asking specific questions like 'How do I book an appointment?' or 'What features are available for businesses?'",
+        "what can you do":
+          "I can guide you through the entire appointment system: registration process, login help, booking and managing appointments, business setup and management, troubleshooting issues, and explaining system features. I provide step-by-step instructions for all major tasks.",
+        hi: "Hello! I'm your Appointment Assistant. I can help you with registration, booking appointments, managing your account, and answering questions about the appointment system. What would you like help with today?",
+        hello:
+          "Hi there! I'm here to help you navigate the Appointment Management System. You can ask me about registration, booking appointments, managing your schedule, or any other questions about using the system. How can I assist you?",
+      };
+
+      // Try to find a matching fallback response
+      for (const [key, response] of Object.entries(fallbackResponses)) {
+        if (lowerMessage.includes(key)) {
+          return response;
+        }
       }
+
+      // Generic fallback response with helpful guidance
+      return (
+        "I'm currently unable to connect to the AI service, but here's some helpful information: " +
+        "You can register as a user or business, book appointments with available businesses, manage your schedule, " +
+        "and get help with any questions about the appointment system. " +
+        "Try asking more specific questions like 'How do I book an appointment?' or 'What features are available for business users?' " +
+        "The quick actions below also provide immediate help for common tasks."
+      );
     }
   }
 
@@ -241,261 +278,3 @@ Guide:`;
 }
 
 module.exports = new AIService();
-
-// const { GoogleGenerativeAI } = require("@google/generative-ai");
-// const dotenv = require("dotenv");
-
-// dotenv.config();
-
-// class AIService {
-//   constructor() {
-//     this.genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-//     this.model = process.env.GEMINI_MODEL || "gemini-pro";
-//     this.systemPrompt = this.getSystemPrompt();
-//     this.generationConfig = {
-//       temperature: 0.7,
-//       topP: 0.8,
-//       topK: 40,
-//       maxOutputTokens: 500,
-//     };
-//   }
-
-//   getSystemPrompt() {
-//     return `You are "${
-//       process.env.AI_ASSISTANT_NAME || "Appointment Assistant"
-//     }", a helpful AI assistant for an Appointment Management System.
-
-// PERSONALITY & STYLE:
-// - Be concise, helpful, and friendly
-// - Use bullet points and numbered steps for clarity
-// - Include relevant URLs when helpful
-// - Keep responses under 500 words
-// - Use emojis sparingly (1-2 per response)
-
-// SYSTEM INFORMATION:
-// - Platform: Appointment Management System with React frontend and Node.js/Express/MongoDB backend
-// - URL: http://localhost:5173 (frontend), http://localhost:5000 (backend)
-// - Current Date: ${new Date().toDateString()}
-
-// APPLICATION FEATURES:
-// 1. User Authentication:
-//    - Registration with email verification
-//    - Login with JWT tokens
-//    - Social login (Google/Facebook)
-//    - Password reset functionality
-
-// 2. User Roles:
-//    - Customer: Can book, view, and cancel appointments
-//    - Business: Can manage time slots, view appointments, update statuses
-
-// 3. Core Features:
-//    - Calendar view with FullCalendar integration
-//    - Time slot management for businesses
-//    - Appointment booking system
-//    - Email reminders via cron jobs
-//    - Business dashboard with statistics
-//    - Customer appointment management
-
-// 4. Key Pages:
-//    - Home (/): Landing page with features
-//    - Login (/login): Authentication page
-//    - Register (/register): Account creation
-//    - Dashboard (/dashboard): Role-specific dashboard
-//    - Appointments (/appointments): Book/view appointments
-//    - Business Admin (/business-admin): Business management
-//    - Profile (/profile): User profile management
-//    - Forgot Password (/forgot-password): Password recovery
-//    - Reset Password (/reset-password/:token): Password reset
-//    - Verify Email (/verify-email/:token): Email verification
-
-// TASK FLOWS:
-
-// BUSINESS FLOW:
-// 1. Register as business → Verify email → Login → Complete profile → Create time slots → View appointments → Update statuses
-
-// CUSTOMER FLOW:
-// 1. Register as customer → Verify email → Login → Search businesses → View calendar → Book appointment → Manage appointments
-
-// RESPONSE GUIDELINES:
-// 1. Always provide actionable steps
-// 2. Include specific page URLs when relevant
-// 3. Mention authentication requirements
-// 4. Break complex tasks into numbered steps
-// 5. End with a helpful follow-up question
-// 6. Be optimistic and encouraging
-
-// SAFETY GUIDELINES:
-// - Do not provide code implementation
-// - Do not share sensitive system information
-// - Do not make promises about system capabilities
-// - Focus on guiding users through existing features`;
-//   }
-
-//   async generateResponse(userMessage, context = {}) {
-//     try {
-//       const model = this.genAI.getGenerativeModel({
-//         model: this.model,
-//         generationConfig: this.generationConfig,
-//       });
-
-//       const prompt = `${this.systemPrompt}
-
-// Current User Context:
-// - Authenticated: ${context.isAuthenticated ? "Yes" : "No"}
-// - Role: ${context.userRole || "Not logged in"}
-// - Current Page: ${context.currentPage || "Unknown"}
-// - Time: ${context.currentTime || "Unknown"}
-
-// User Question: ${userMessage}
-
-// Provide a helpful, actionable response:`;
-
-//       const result = await model.generateContent(prompt);
-//       const response = await result.response;
-
-//       // Clean up the response text
-//       let text = response.text();
-
-//       // Remove any markdown code blocks if present
-//       text = text
-//         .replace(/```[\s\S]*?\n/g, "")
-//         .replace(/```/g, "")
-//         .trim();
-
-//       return text;
-//     } catch (error) {
-//       console.error("Gemini API Error:", error);
-
-//       // Provide helpful error messages
-//       if (error.message.includes("API key")) {
-//         throw new Error(
-//           "AI service configuration error. Please contact support."
-//         );
-//       } else if (error.message.includes("quota")) {
-//         throw new Error(
-//           "AI service temporarily unavailable. Please try again later."
-//         );
-//       } else {
-//         throw new Error(
-//           "I encountered an error. Please try rephrasing your question."
-//         );
-//       }
-//     }
-//   }
-
-//   async getQuickActions(userRole, isAuthenticated) {
-//     const actions = {
-//       unauthenticated: [
-//         {
-//           label: "📝 How to register?",
-//           query: "How do I create an account?",
-//         },
-//         {
-//           label: "🔐 Login help",
-//           query: "How do I login to the system?",
-//         },
-//         {
-//           label: "🏢 Business vs Customer",
-//           query:
-//             "What is the difference between business and customer accounts?",
-//         },
-//       ],
-//       customer: [
-//         {
-//           label: "📅 Book appointment",
-//           query: "How do I book an appointment with a business?",
-//         },
-//         {
-//           label: "👀 View my appointments",
-//           query: "Where can I see all my appointments?",
-//         },
-//         {
-//           label: "❌ Cancel appointment",
-//           query: "How do I cancel or reschedule an appointment?",
-//         },
-//         {
-//           label: "🔍 Find businesses",
-//           query: "How do I search for businesses?",
-//         },
-//       ],
-//       business: [
-//         {
-//           label: "⏰ Set up time slots",
-//           query: "How do I create available time slots for customers?",
-//         },
-//         {
-//           label: "📊 Manage appointments",
-//           query: "How do I view and manage customer appointments?",
-//         },
-//         {
-//           label: "🔄 Update status",
-//           query: "How do I change the status of an appointment?",
-//         },
-//         {
-//           label: "📈 View dashboard",
-//           query: "What information is available on the business dashboard?",
-//         },
-//       ],
-//     };
-
-//     if (!isAuthenticated) return actions.unauthenticated;
-//     return actions[userRole] || actions.unauthenticated;
-//   }
-
-//   async generateStepByStepGuide(task, context) {
-//     try {
-//       const model = this.genAI.getGenerativeModel({
-//         model: this.model,
-//         generationConfig: {
-//           ...this.generationConfig,
-//           maxOutputTokens: 800,
-//           temperature: 0.5,
-//         },
-//       });
-
-//       const prompt = `${this.systemPrompt}
-
-// User Context:
-// - Role: ${context.userRole || "Not logged in"}
-// - Authenticated: ${context.isAuthenticated ? "Yes" : "No"}
-// - Current Page: ${context.currentPage || "Unknown"}
-
-// Generate a step-by-step guide for: ${task}
-
-// Format Requirements:
-// 1. Start with a brief introduction
-// 2. Use numbered steps (1., 2., 3.)
-// 3. Each step should be clear and actionable
-// 4. Include specific page names or button labels
-// 5. Mention any prerequisites
-// 6. End with a summary or next steps
-// 7. Keep it concise but complete
-
-// Guide:`;
-
-//       const result = await model.generateContent(prompt);
-//       const response = await result.response;
-
-//       return response.text().trim();
-//     } catch (error) {
-//       console.error("Guide Generation Error:", error);
-//       throw new Error("Failed to generate guide. Please try again.");
-//     }
-//   }
-
-//   // Test Gemini API connection
-//   async testConnection() {
-//     try {
-//       const model = this.genAI.getGenerativeModel({ model: this.model });
-//       const prompt = "Say 'AI Assistant is ready!'";
-//       const result = await model.generateContent(prompt);
-//       const response = await result.response;
-//       return response.text().includes("ready");
-//     } catch (error) {
-//       console.error("Gemini Test Connection Error:", error);
-//       return false;
-//     }
-//   }
-// }
-
-// module.exports = new AIService();

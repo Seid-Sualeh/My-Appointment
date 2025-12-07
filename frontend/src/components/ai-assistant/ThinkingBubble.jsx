@@ -50,7 +50,7 @@ const ThinkingBubble = () => {
       <div className="flex items-center">
         <SparklesIcon className="h-4 w-4 text-blue-600 mr-2" />
         <span className="text-sm text-blue-700 font-medium">
-          Thinking with Gemini...
+          Thinking with AI Assistance....
         </span>
       </div>
     </div>
