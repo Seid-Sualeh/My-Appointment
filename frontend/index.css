@@ -15,7 +15,7 @@ body {
   @apply bg-white text-gray-900;
 }
 
-.dark body {
+html.dark {
   @apply bg-gray-900 text-gray-100;
 }
 
@@ -36,10 +36,10 @@ body {
 }
 
 /* Dark mode specific styles */
-.dark .fc {
+html.dark .fc {
   @apply bg-gray-800 text-gray-100;
 }
 
-.dark .fc-event {
+html.dark .fc-event {
   @apply bg-blue-600 text-white;
 }
