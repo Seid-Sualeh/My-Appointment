@@ -126,6 +126,16 @@ app.use((err, req, res, next) => {
   });
 });
 
+// --- 404 Handler for undefined routes ---
+app.use((req, res, next) => {
+  res.status(404).json({
+    status: "NOT_FOUND",
+    code: "NOT_FOUND",
+    message: "The requested resource was not found",
+    timestamp: new Date().toISOString(),
+  });
+});
+
 // --- Server Startup ---
 const PORT = process.env.PORT || 5000;
 

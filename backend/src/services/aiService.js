@@ -123,6 +123,30 @@ System Context: ${this.systemPrompt}`;
 
       return text;
     } catch (error) {
+      console.error("AI Service Error:", error);
+
+      // Handle specific 404 errors from Gemini API
+      if (
+        error.message.includes("404") ||
+        error.message.includes("NOT_FOUND")
+      ) {
+        throw new Error(
+          "AI service resource not found. Please try again or ask a different question."
+        );
+      }
+
+      // Handle rate limit and quota errors
+      if (
+        error.message.includes("insufficient_quota") ||
+        error.message.includes("429") ||
+        error.message.includes("quota") ||
+        error.message.includes("rate limit")
+      ) {
+        throw new Error(
+          "AI service is temporarily unavailable due to high demand. Please try again later."
+        );
+      }
+
       // Enhanced fallback responses for when Gemini API fails
       const lowerMessage = userMessage.toLowerCase();
 

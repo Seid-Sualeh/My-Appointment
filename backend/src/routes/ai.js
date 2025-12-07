@@ -76,10 +76,30 @@ router.post("/chat", aiLimiter, async (req, res, next) => {
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
+    console.error("AI Route Error:", error);
+
+    // Handle 404 errors from AI service
+    if (
+      error.message.includes("404") ||
+      error.message.includes("NOT_FOUND") ||
+      error.message.includes("resource not found")
+    ) {
+      return res.status(404).json({
+        success: false,
+        message: "AI service resource not found",
+        fallback: true,
+        fallbackMessage:
+          "I couldn't find the information you requested. Please try asking your question differently or use the quick actions below for common tasks.",
+        timestamp: new Date().toISOString(),
+      });
+    }
+
     // Handle rate limit and quota errors with fallback responses
     if (
       error.message.includes("insufficient_quota") ||
-      error.message.includes("429")
+      error.message.includes("429") ||
+      error.message.includes("quota") ||
+      error.message.includes("rate limit")
     ) {
       return res.status(429).json({
         success: false,
