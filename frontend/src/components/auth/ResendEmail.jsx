@@ -18,7 +18,7 @@ const ResendEmail = () => {
     setMessage("");
 
     try {
-      const result = await dispatch(resendVerification({ email: user?.email }));
+      const result = await dispatch(resendVerification(user?.email));
 
       if (resendVerification.fulfilled.match(result)) {
         setMessage(

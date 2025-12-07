@@ -67,14 +67,14 @@ const Home = () => {
 
   const testimonials = [
     {
-      name: "Sarah Johnson",
-      role: "Salon Owner",
+      name: "Mohammed Ali",
+      role: "Business Owner",
       content:
         "This system has transformed how we manage appointments. Our no-show rate dropped by 70%!",
       avatar: "SJ",
     },
     {
-      name: "Michael Chen",
+      name: "Betty ",
       role: "Dental Clinic Manager",
       content:
         "The automated reminders alone saved us hours of administrative work each week.",
