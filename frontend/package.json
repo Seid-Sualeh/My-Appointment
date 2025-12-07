@@ -30,7 +30,7 @@
     "react-redux": "^8.1.2",
     "react-router-dom": "^6.15.0",
     "yup": "^1.3.2",
-    "@react-oauth/google": "^0.12.1"  <-- ADD THIS LINE
+    "@react-oauth/google": "^0.12.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",

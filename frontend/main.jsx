@@ -6,14 +6,17 @@ import { store } from "./src/store/store";
 import App from "./App";
 import "./index.css";
 import { Toaster } from "react-hot-toast";
+import { ThemeProvider } from "./src/context/ThemeContext";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <Provider store={store}>
-      <BrowserRouter>
-        <App />
-        <Toaster position="top-right" />
-      </BrowserRouter>
+      <ThemeProvider>
+        <BrowserRouter>
+          <App />
+          <Toaster position="top-right" />
+        </BrowserRouter>
+      </ThemeProvider>
     </Provider>
   </React.StrictMode>
 );

@@ -109,7 +109,7 @@ const Home = () => {
               <>
                 <Link
                   to="/register"
-                  className="px-8 py-4 bg-blue-600 text-white text-lg font-semibold rounded-xl hover:bg-blue-700 shadow-lg hover:shadow-xl transition-all"
+                  className="px-8 py-4      bg-gradient-to-r from-blue-600 to-purple-600         text-white text-lg font-semibold rounded-xl hover:bg-blue-700 shadow-lg hover:shadow-xl transition-all"
                 >
                   Get Started Free
                 </Link>
