@@ -97,6 +97,16 @@ app.get("/health", (req, res) => {
   res.status(200).json({ status: "OK", timestamp: new Date().toISOString() });
 });
 
+// Root route for Render health checks and general status
+app.get("/", (req, res) => {
+  res.status(200).json({
+    status: "OK",
+    message: "Appointment Management System API",
+    timestamp: new Date().toISOString(),
+    version: "1.0.0",
+  });
+});
+
 // Test route to check body parsing
 app.post("/test-body", (req, res) => {
   console.log("Received body:", req.body);

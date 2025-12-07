@@ -305,6 +305,124 @@ npm start
 
 Ensure all environment variables are set in production with proper security measures.
 
+### **Render Deployment Guide**
+
+#### **Backend Deployment to Render**
+
+1. **Create a new Web Service on Render**
+
+   - Select "Web Service" from the Render dashboard
+   - Connect your GitHub repository
+   - Set the root directory to `backend/`
+
+2. **Configure Environment Variables**
+   Add all required environment variables from your `.env` file:
+
+   ```env
+   MONGODB_URI=your_mongodb_connection_string
+   JWT_SECRET=your_jwt_secret_key
+   JWT_EXPIRE=7d
+   GOOGLE_CLIENT_ID=your_google_client_id
+   GOOGLE_CLIENT_SECRET=your_google_client_secret
+   EMAIL_HOST=smtp.gmail.com
+   EMAIL_PORT=587
+   EMAIL_USER=your_email@gmail.com
+   EMAIL_PASSWORD=your_email_password
+   CLIENT_URL=https://your-frontend-url.onrender.com
+   GEMINI_API_KEY=your_gemini_api_key
+   GEMINI_MODEL=gemini-pro
+   OPENAI_MODEL=gpt-3.5-turbo
+   ```
+
+3. **Set Build Command**
+
+   ```bash
+   npm install
+   ```
+
+4. **Set Start Command**
+
+   ```bash
+   npm start
+   ```
+
+5. **Configure Auto-Deploy**
+   - Enable auto-deploy for automatic updates on Git pushes
+   - Set branch to `main` or your production branch
+
+#### **Frontend Deployment to Render**
+
+1. **Create a new Static Site on Render**
+
+   - Select "Static Site" from the Render dashboard
+   - Connect your GitHub repository
+   - Set the root directory to `frontend/`
+
+2. **Configure Build Settings**
+
+   - Build Command: `npm run build`
+   - Publish Directory: `dist`
+
+3. **Set Environment Variables**
+
+   ```env
+   VITE_API_BASE_URL=https://your-backend-url.onrender.com/api
+   VITE_GOOGLE_CLIENT_ID=your_google_client_id
+   VITE_FACEBOOK_APP_ID=your_facebook_app_id
+   ```
+
+4. **Enable Auto-Deploy**
+   - Configure auto-deploy for your production branch
+
+#### **Render Health Check Configuration**
+
+The backend includes a root route (`/`) that responds with status information for Render's health checks:
+
+```json
+{
+  "status": "OK",
+  "message": "Appointment Management System API",
+  "timestamp": "2023-12-07T19:38:00.000Z",
+  "version": "1.0.0"
+}
+```
+
+#### **Troubleshooting Render Deployment**
+
+**Common Issues and Solutions:**
+
+1. **404 Errors on Root Route**
+
+   - Ensure the root route handler is present in `backend/src/server.js`
+   - Verify the server is running and responding to health checks
+
+2. **Database Connection Issues**
+
+   - Check MongoDB URI and network access
+   - Ensure IP whitelisting if using MongoDB Atlas
+
+3. **CORS Issues**
+
+   - Update `CLIENT_URL` in backend environment variables to match your frontend URL
+   - Ensure CORS middleware is properly configured
+
+4. **Port Configuration**
+
+   - Render automatically sets `PORT` environment variable
+   - Ensure your server listens on `process.env.PORT`
+
+5. **Environment Variables Not Loading**
+   - Verify all variables are correctly set in Render dashboard
+   - Check for typos in variable names
+   - Restart the service after updating variables
+
+#### **Render Service Monitoring**
+
+- Use Render's built-in monitoring and logging
+- Set up alerts for service downtime
+- Monitor database connection status
+- Check API response times and error rates
+
 ## 📝 License
 
 This project is licensed under the MIT License.
