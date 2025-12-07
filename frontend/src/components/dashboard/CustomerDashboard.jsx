@@ -91,7 +91,7 @@ const CustomerDashboard = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-t-green-500 border-r-2 border-r-yellow-500 border-b-2 border-b-red-500"></div>
       </div>
     );
   }
@@ -99,7 +99,7 @@ const CustomerDashboard = () => {
   return (
     <div className="space-y-8">
       {/* Welcome Header */}
-      <div className="bg-gradient-to-r from-green-600 to-green-800 rounded-2xl p-8 text-white">
+      <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 text-white">
         <h1 className="text-3xl font-bold mb-2">Welcome back, {user?.name}!</h1>
         <p className="text-green-100">
           Manage your appointments and discover new services.

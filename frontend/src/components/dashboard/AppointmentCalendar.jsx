@@ -12,7 +12,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useSelector } from "react-redux";
 import { appointmentService } from "../../services/appointmentService";
 import LoadingSpinner from "../common/LoadingSpinner";
-// Removed: import "./AppointmentCalendar.css";
+
 
 const AppointmentCalendar = ({
   view = "month", // month, week, day
