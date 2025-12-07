@@ -21,7 +21,6 @@ function App() {
   return (
     <Layout>
       <Routes>
-        <Route path="/" element={<Home />} />
         <Route
           path="/login"
           element={!user ? <Login /> : <Navigate to="/dashboard" />}
@@ -34,7 +33,6 @@ function App() {
           path="/forgot-password"
           element={!user ? <ForgotPassword /> : <Navigate to="/dashboard" />}
         />
-
         <Route
           path="/reset-password/:token"
           element={!user ? <ResetPassword /> : <Navigate to="/dashboard" />}
@@ -50,6 +48,8 @@ function App() {
           }
         />
         <Route path="/auth/social-callback" element={<SocialCallback />} />
+
+        <Route path="/" element={<Home />} />
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/appointments" element={<Appointments />} />
@@ -61,7 +61,7 @@ function App() {
           )}
         </Route>
 
-        <Route path="*" element={<Navigate to="/" />} />
+        <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
     </Layout>
   );

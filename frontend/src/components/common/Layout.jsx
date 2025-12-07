@@ -26,24 +26,12 @@
 
 // export default Layout;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 import React from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 import LoadingSpinner from "./LoadingSpinner";
 import { useSelector } from "react-redux";
+import AIAssistant from "../../components/ai-assistant/AIAssistant";
 
 const Layout = ({ children }) => {
   const { loading } = useSelector((state) => state.auth);
@@ -55,6 +43,8 @@ const Layout = ({ children }) => {
         {loading ? <LoadingSpinner /> : children}
       </main>
       <Footer />
+      {/* Global AI Assistant - appears on all pages */}
+      <AIAssistant />
     </div>
   );
 };

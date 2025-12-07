@@ -1,9 +1,6 @@
-
-
 import React from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-
 
 import {
   CalendarDaysIcon,
@@ -13,9 +10,6 @@ import {
   DevicePhoneMobileIcon,
   ShieldCheckIcon,
 } from "@heroicons/react/24/outline";
-
-import AIAssistant from "../components/ai-assistant/AIAssistant";
-
 
 const Home = () => {
   const { user } = useSelector((state) => state.auth);
@@ -284,8 +278,6 @@ const Home = () => {
           No credit card required • 14-day free trial • Cancel anytime
         </p>
       </section>
-
-      <AIAssistant />
     </div>
   );
 };
