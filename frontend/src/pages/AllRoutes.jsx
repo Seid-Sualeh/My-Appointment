@@ -12,6 +12,7 @@ import ResetPassword from "./ResetPassword";
 import VerifyEmail from "./VerifyEmail";
 import ResendVerification from "./ResendVerification";
 import SocialCallback from "./SocialCallback";
+import NotFound from "./NotFound";
 import ProtectedRoute from "../components/common/ProtectedRoute";
 
 function AllRoutes() {
@@ -57,7 +58,7 @@ function AllRoutes() {
         )}
       </Route>
 
-      <Route path="*" element={<Navigate to="/login" />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }

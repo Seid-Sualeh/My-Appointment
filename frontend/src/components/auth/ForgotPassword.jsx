@@ -23,7 +23,7 @@ const ForgotPassword = () => {
 
       if (forgotPassword.fulfilled.match(result)) {
         setMessage(
-          "Password reset email sent successfully. Please check your inbox."
+          "I will send you a link on your email. Please check your inbox."
         );
       } else if (forgotPassword.rejected.match(result)) {
         setError(result.payload?.message || "Failed to send reset email");

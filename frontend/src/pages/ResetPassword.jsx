@@ -30,7 +30,7 @@ const ResetPassword = () => {
 
       if (resetPassword.fulfilled.match(result)) {
         setMessage(
-          "Password reset successfully! You can now login with your new password."
+          "Password reset successfully! Go to login and login by your new password."
         );
         setTimeout(() => {
           navigate("/login");
