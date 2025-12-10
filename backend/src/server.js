@@ -34,7 +34,7 @@ const allowedOrigins =
         "http://localhost:5173",
         "http://localhost:5174",
         "http://localhost:3000",
-        "http://localhost:5175",
+        "https://my-appointmentbackend.vercel.app",
         "http://127.0.0.1:5173",
         "http://127.0.0.1:5174",
         process.env.CLIENT_URL,
@@ -48,7 +48,7 @@ app.use(
 
       // In development, allow any localhost origin
       if (
-        process.env.NODE_ENV === "development" &&
+        (process.env.NODE_ENV === "development" || !process.env.NODE_ENV) &&
         (origin.startsWith("http://localhost:") ||
           origin.startsWith("http://127.0.0.1:"))
       ) {
@@ -64,7 +64,7 @@ app.use(
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    allowedHeaders: ["Content-Type", "Authorization", "x-access-token"],
   })
 );
 app.use(morgan("dev")); // Logging

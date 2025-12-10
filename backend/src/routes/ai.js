@@ -133,9 +133,11 @@ router.get("/quick-actions", async (req, res) => {
       actions,
     });
   } catch (error) {
+    console.error("Quick actions error:", error);
     res.status(500).json({
       success: false,
       message: "Failed to get quick actions",
+      error: process.env.NODE_ENV === "development" ? error.message : undefined,
     });
   }
 });
@@ -194,7 +196,5 @@ router.get("/suggestions", async (req, res) => {
     });
   }
 });
-
-module.exports = router;
 
 module.exports = router;
