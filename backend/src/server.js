@@ -29,7 +29,10 @@ app.use(helmet()); // Security headers
 // CORS configuration - allow multiple origins in development
 const allowedOrigins =
   process.env.NODE_ENV === "production"
-    ? [process.env.CLIENT_URL].filter(Boolean)
+    ? [
+        process.env.CLIENT_URL,
+        "https://my-appointment-app-eta.vercel.app",
+      ].filter(Boolean)
     : [
         "http://localhost:5173",
         "http://localhost:5174",
