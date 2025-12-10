@@ -122,8 +122,8 @@ router.post("/chat", aiLimiter, async (req, res, next) => {
 // Get quick actions based on user context
 router.get("/quick-actions", async (req, res) => {
   try {
-    // Get user info if authenticated, otherwise use null/guest context
-    const userRole = req.user?.role || null;
+    // Get user info if authenticated, otherwise use guest context
+    const userRole = req.user ? req.user.role : null;
     const isAuthenticated = !!req.user;
 
     const actions = await aiService.getQuickActions(userRole, isAuthenticated);
@@ -134,10 +134,18 @@ router.get("/quick-actions", async (req, res) => {
     });
   } catch (error) {
     console.error("Quick actions error:", error);
-    res.status(500).json({
-      success: false,
-      message: "Failed to get quick actions",
-      error: process.env.NODE_ENV === "development" ? error.message : undefined,
+
+    // Provide fallback quick actions if AI service fails
+    const fallbackActions = [
+      { label: "How to register?", query: "How do I create an account?" },
+      { label: "Login help", query: "How do I login to the system?" },
+      { label: "Book appointment", query: "How do I book an appointment?" },
+      { label: "Find businesses", query: "How do I search for businesses?" },
+    ];
+
+    res.json({
+      success: true,
+      actions: fallbackActions,
     });
   }
 });

@@ -7,9 +7,8 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../../store/authSlice";
 import LoadingSpinner from "../common/LoadingSpinner";
-// REMOVED: import { authService } from "../../services/authService"; // Assuming direct use of env var for simplicity
 
-// Define the API base URL from the environment, with a fallback for robustness
+
 const API_BASE_URL =
   import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
